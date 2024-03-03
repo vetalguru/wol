@@ -30,3 +30,11 @@
 *.exe
 *.out
 *.app
+
+# Build dirs
+BUILD
+build
+
+# Temporary files
+*.user
+
