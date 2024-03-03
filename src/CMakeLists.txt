@@ -1,0 +1,15 @@
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+include_directories(${PROJECT_SOURCE_DIR}/include)
+set(INCLUDES_LIST ${PROJECT_SOURCE_DIR}/include/wolapplication.h)
+
+set(SOURCES_LIST  ${PROJECT_SOURCE_DIR}/src/main.cpp
+                  ${PROJECT_SOURCE_DIR}/src/wolapplication.cpp)
+
+add_executable(${PROJECT_NAME} ${INCLUDES_LIST} ${SOURCES_LIST})
+
+install(TARGETS ${PROJECT_NAME}
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+)
