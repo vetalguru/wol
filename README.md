@@ -1,3 +1,5 @@
+[![CMake on a single platform](https://github.com/vetalguru/wol/actions/workflows/cmake-single-platform.yml/badge.svg)](https://github.com/vetalguru/wol/actions/workflows/cmake-single-platform.yml)
+
 Usage: wol <MAC_ADDRESS>
 
 Wake-on-LAN (WOL) utility to send wake-up signals to a remote computer.
