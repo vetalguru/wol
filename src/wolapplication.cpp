@@ -44,11 +44,10 @@ bool WolApplication::validateParams(const std::vector<std::string>& params) noex
 }
 
 bool WolApplication::validateMacAddrString(const std::string& macStr) noexcept {
-    constexpr char DELIMITER{':'};
     bool isValid = (macStr.length() == MAC_STR_LENGTH);
 
     for (int i = 0; isValid && i < MAC_STR_LENGTH; ++i) {
-        isValid = (i % 3 != 2) ? std::isxdigit(macStr[i]) : (macStr[i] == DELIMITER);
+        isValid = (i % 3 != 2) ? std::isxdigit(macStr[i]) : isDelimiter(macStr[i]);
     }
 
     return isValid;
@@ -126,6 +125,21 @@ void WolApplication::printHelpMessage() const {
     std::cout << "Usage: wol <MAC_ADDRESS>\n\n"
               << "Wake-on-LAN (WOL) utility to send wake-up signals to a remote computer.\n\n"
               << "Examples:\n"
-              << "  wol 00:1A:2B:3C:4D:5E   # Send a Wake-on-LAN signal to the default broadcast address."
+              << "  wol 00:1A:2B:3C:4D:5E   # Send a Wake-on-LAN signal to the default broadcast address (delimiter :).\n"
+              << "  wol 00-1A-2B-3C-4D-5E   # Send a Wake-on-LAN signal to the default broadcast address (delimiter -).\n"
               << std::endl;
+}
+
+bool WolApplication::isDelimiter(const char c) const noexcept {
+    const std::array<char, 2> DELIMITERS{':', '-'};
+    bool result{false};
+
+    for (const auto &ch : DELIMITERS) {
+        if (c == ch) {
+            result = true;
+            break;
+        }
+    }
+
+    return result;
 }

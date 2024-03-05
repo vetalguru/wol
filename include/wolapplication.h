@@ -37,6 +37,8 @@ class WolApplication
 
         void printHelpMessage() const;
 
+        bool isDelimiter(const char c) const noexcept;
+
     private:
         std::vector<std::string> m_params;
 };
