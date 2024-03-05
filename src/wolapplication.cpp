@@ -9,7 +9,7 @@
 #include <unistd.h>
 
 WolApplication::WolApplication(const int argc, const char * const argv[]) {
-    parseParams(argc, argv);
+    m_isParamsValid = parseParams(argc, argv);
 }
 
 WolApplication::~WolApplication() {
@@ -17,7 +17,7 @@ WolApplication::~WolApplication() {
 
 int WolApplication::run() noexcept {
     std::array<char, MAC_BYTES_LENGTH> mac{};
-    if (!validateParams(m_params) || !converMacStrToBytes(m_params[1], mac)) {
+    if (!m_isParamsValid || !converMacStrToBytes(m_params[1], mac)) {
         std::cerr << "Error: Wrong parameters\n" << std::endl;
         printHelpMessage();
         return EXIT_FAILURE;
@@ -31,16 +31,14 @@ int WolApplication::run() noexcept {
     return (!sendMagicPackage(mac, magicPackage, DEFAULT_WOL_PORT));
 }
 
-void WolApplication::parseParams(const int argc, const char* const argv[]) noexcept {
+bool WolApplication::parseParams(const int argc, const char* const argv[]) noexcept {
     m_params.clear();
 
     for (int i = 0; i < argc; ++i) {
         m_params.emplace_back(argv[i]);
     }
-}
 
-bool WolApplication::validateParams(const std::vector<std::string>& params) noexcept {
-    return (params.size() == 2);
+    return (m_params.size() == 2);
 }
 
 bool WolApplication::isMACAddressString(const std::string& macStr) noexcept {

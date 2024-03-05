@@ -25,8 +25,7 @@ class WolApplication
         static constexpr int    DEFAULT_WOL_PORT{9};
 
     private:
-        void parseParams(const int argc, const char* const argv[]) noexcept;
-        bool validateParams(const std::vector<std::string>& params) noexcept;
+        bool parseParams(const int argc, const char* const argv[]) noexcept;
         bool isMACAddressString(const std::string& macStr) noexcept;
         bool converMacStrToBytes(const std::string& macStr, std::array<char, MAC_BYTES_LENGTH>& mac) noexcept;
         void generateMagicPackage(const std::array<char, MAC_BYTES_LENGTH>& mac,
@@ -41,6 +40,8 @@ class WolApplication
 
     private:
         std::vector<std::string> m_params;
+
+        bool m_isParamsValid{false};
 };
 
 #endif // WOLAPPLICATION_H
