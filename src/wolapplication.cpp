@@ -119,7 +119,7 @@ bool WolApplication::sendMagicPackage(const std::array<char, MAC_BYTES_LENGTH>& 
     return (sentBytes == static_cast<ssize_t>(magicPackage.size()));;
 }
 
-void WolApplication::printHelpMessage() const {
+void WolApplication::printHelpMessage() const noexcept {
     std::cout << "Usage: wol <MAC_ADDRESS>\n\n"
               << "Wake-on-LAN (WOL) utility to send wake-up signals to a remote computer.\n\n"
               << "Examples:\n"
