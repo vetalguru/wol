@@ -34,7 +34,7 @@ class WolApplication
                               const std::array<char, MAC_MAGIC_PACKAGE_LENGTH>& magicPackage,
                               const int port = DEFAULT_WOL_PORT) noexcept;
 
-        void printHelpMessage() const;
+        void printHelpMessage() const noexcept;
 
         bool isDelimiter(const char c) const noexcept;
 
