@@ -27,7 +27,7 @@ class WolApplication
     private:
         void parseParams(const int argc, const char* const argv[]) noexcept;
         bool validateParams(const std::vector<std::string>& params) noexcept;
-        bool validateMacAddrString(const std::string& macStr) noexcept;
+        bool isMACAddressString(const std::string& macStr) noexcept;
         bool converMacStrToBytes(const std::string& macStr, std::array<char, MAC_BYTES_LENGTH>& mac) noexcept;
         void generateMagicPackage(const std::array<char, MAC_BYTES_LENGTH>& mac,
                                   std::array<char, MAC_MAGIC_PACKAGE_LENGTH>& magicPackage) noexcept;
