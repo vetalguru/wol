@@ -43,7 +43,7 @@ bool WolApplication::validateParams(const std::vector<std::string>& params) noex
     return (params.size() == 2);
 }
 
-bool WolApplication::validateMacAddrString(const std::string& macStr) noexcept {
+bool WolApplication::isMACAddressString(const std::string& macStr) noexcept {
     bool isValid = (macStr.length() == MAC_STR_LENGTH);
 
     for (int i = 0; isValid && i < MAC_STR_LENGTH; ++i) {
@@ -57,7 +57,7 @@ bool WolApplication::converMacStrToBytes(const std::string& macStr, std::array<c
     std::fill(mac.begin(), mac.end(), 0);
 
     bool result{true};
-    if (validateMacAddrString(macStr)) {
+    if (isMACAddressString(macStr)) {
         constexpr int HEX{16}; // basis
         const char* ptr = macStr.c_str();
         char* endPtr = nullptr;
