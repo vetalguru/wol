@@ -14,7 +14,7 @@ WolApplication::WolApplication(int argc, const char * const argv[]) {
 }
 
 int WolApplication::run() noexcept {
-    std::array<char, kMacBytesLength> mac{};
+    mac_t mac{};
     if (!m_isParamsValid || !strToMac(m_params[1], mac)) {
         std::cerr << "Error: Wrong parameters\n" << std::endl;
         printHelpMessage();
@@ -23,10 +23,7 @@ int WolApplication::run() noexcept {
 
     std::cout << "Sending a magic package to the address : " << m_params[1] << std::endl;
 
-    std::array<char, kMacMagicPackageLength> magicPackage{};
-    generateMagicPackage(mac, magicPackage);
-
-    return (!sendMagicPackage(mac, magicPackage, kDefaultWolPort));
+    return (!sendMagicPackage(mac, genMagicPackage(mac)));
 }
 
 bool WolApplication::parseParams(int argc, const char* const argv[]) noexcept {
@@ -73,7 +70,9 @@ bool WolApplication::strToMac(const std::string& macStr, mac_t& mac) noexcept {
     return result;
 }
 
-void WolApplication::generateMagicPackage(const mac_t& mac, magic_t& magicPackage) noexcept {
+WolApplication::magic_t WolApplication::genMagicPackage(const mac_t& mac) noexcept {
+    magic_t magicPackage;
+
     // Set the first 6 bytes to 0xFF
     std::fill_n(magicPackage.begin(), kMacBytesLength, 0xFF);
 
@@ -81,6 +80,8 @@ void WolApplication::generateMagicPackage(const mac_t& mac, magic_t& magicPackag
     for (int i = 1; i <= 16; ++i) {
         std::copy(mac.begin(), mac.end(), magicPackage.begin() + i * kMacBytesLength);
     }
+
+    return magicPackage;
 }
 
 bool WolApplication::sendMagicPackage(const mac_t& mac,
