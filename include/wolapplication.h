@@ -8,35 +8,35 @@
 class WolApplication
 {
     public:
-        WolApplication(const int argc, const char* const argv[]);
-        WolApplication(const WolApplication&) = delete;
-        WolApplication(WolApplication&&) = delete;
-        ~WolApplication() = delete;
+        WolApplication(int argc, const char* const argv[]);
+        ~WolApplication() = default;
 
         int run() noexcept;
+
+        WolApplication(const WolApplication&) = delete;
+        WolApplication(WolApplication&&) = delete;
 
         WolApplication& operator = (const WolApplication&) = delete;
         WolApplication& operator = (WolApplication&&) = delete;
 
     private:
-        static constexpr size_t MAC_STR_LENGTH{17};
-        static constexpr size_t MAC_BYTES_LENGTH{6};
-        static constexpr size_t MAC_MAGIC_PACKAGE_LENGTH{102};
-        static constexpr int    DEFAULT_WOL_PORT{9};
+        static constexpr size_t kMacStrLength = 17;
+        static constexpr size_t kMacBytesLength = 6;
+        static constexpr size_t kMacMagicPackageLength = 102;
+        static constexpr int    kDefaultWolPort = 9;
 
-    private:
-        bool parseParams(const int argc, const char* const argv[]) noexcept;
+        bool parseParams(int argc, const char* const argv[]) noexcept;
         bool isMACAddressString(const std::string& macStr) noexcept;
-        bool convertMacStrToBytes(const std::string& macStr, std::array<char, MAC_BYTES_LENGTH>& mac) noexcept;
-        void generateMagicPackage(const std::array<char, MAC_BYTES_LENGTH>& mac,
-                                  std::array<char, MAC_MAGIC_PACKAGE_LENGTH>& magicPackage) noexcept;
-        bool sendMagicPackage(const std::array<char, MAC_BYTES_LENGTH>& mac,
-                              const std::array<char, MAC_MAGIC_PACKAGE_LENGTH>& magicPackage,
-                              const int port = DEFAULT_WOL_PORT) noexcept;
+        bool convertMacStrToBytes(const std::string& macStr, std::array<char, kMacBytesLength>& mac) noexcept;
+        void generateMagicPackage(const std::array<char, kMacBytesLength>& mac,
+                                  std::array<char, kMacMagicPackageLength>& magicPackage) noexcept;
+        bool sendMagicPackage(const std::array<char, kMacBytesLength>& mac,
+                              const std::array<char, kMacMagicPackageLength>& magicPackage,
+                              const int port = kDefaultWolPort) noexcept;
 
         void printHelpMessage() const noexcept;
 
-        bool isDelimiter(const char c) const noexcept;
+        bool isDelimiter(char c) const noexcept;
 
     private:
         std::vector<std::string> m_params;

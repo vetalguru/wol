@@ -9,12 +9,12 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-WolApplication::WolApplication(const int argc, const char * const argv[]) {
+WolApplication::WolApplication(int argc, const char * const argv[]) {
     m_isParamsValid = parseParams(argc, argv);
 }
 
 int WolApplication::run() noexcept {
-    std::array<char, MAC_BYTES_LENGTH> mac{};
+    std::array<char, kMacBytesLength> mac{};
     if (!m_isParamsValid || !convertMacStrToBytes(m_params[1], mac)) {
         std::cerr << "Error: Wrong parameters\n" << std::endl;
         printHelpMessage();
@@ -23,13 +23,13 @@ int WolApplication::run() noexcept {
 
     std::cout << "Sending a magic package to the address : " << m_params[1] << std::endl;
 
-    std::array<char, MAC_MAGIC_PACKAGE_LENGTH> magicPackage{};
+    std::array<char, kMacMagicPackageLength> magicPackage{};
     generateMagicPackage(mac, magicPackage);
 
-    return (!sendMagicPackage(mac, magicPackage, DEFAULT_WOL_PORT));
+    return (!sendMagicPackage(mac, magicPackage, kDefaultWolPort));
 }
 
-bool WolApplication::parseParams(const int argc, const char* const argv[]) noexcept {
+bool WolApplication::parseParams(int argc, const char* const argv[]) noexcept {
     m_params.clear();
 
     for (int i = 0; i < argc; ++i) {
@@ -40,16 +40,16 @@ bool WolApplication::parseParams(const int argc, const char* const argv[]) noexc
 }
 
 bool WolApplication::isMACAddressString(const std::string& macStr) noexcept {
-    bool isValid = (macStr.length() == MAC_STR_LENGTH);
+    bool isValid = (macStr.length() == kMacStrLength);
 
-    for (int i = 0; isValid && i < MAC_STR_LENGTH; ++i) {
+    for (int i = 0; isValid && i < kMacStrLength; ++i) {
         isValid = (i % 3 != 2) ? std::isxdigit(macStr[i]) : isDelimiter(macStr[i]);
     }
 
     return isValid;
 }
 
-bool WolApplication::convertMacStrToBytes(const std::string& macStr, std::array<char, MAC_BYTES_LENGTH>& mac) noexcept {
+bool WolApplication::convertMacStrToBytes(const std::string& macStr, std::array<char, kMacBytesLength>& mac) noexcept {
     std::fill(mac.begin(), mac.end(), 0);
 
     bool result{true};
@@ -57,7 +57,7 @@ bool WolApplication::convertMacStrToBytes(const std::string& macStr, std::array<
         constexpr int HEX{16}; // basis
         const char* ptr = macStr.c_str();
         char* endPtr = nullptr;
-        for (char i = 0; i < MAC_BYTES_LENGTH; ++i) {
+        for (char i = 0; i < kMacBytesLength; ++i) {
             mac[i] = static_cast<char>(std::strtol(ptr, &endPtr, HEX));
 
             // Check end of line
@@ -74,19 +74,19 @@ bool WolApplication::convertMacStrToBytes(const std::string& macStr, std::array<
     return result;
 }
 
-void WolApplication::generateMagicPackage(const std::array<char, MAC_BYTES_LENGTH> &mac,
-                                       std::array<char, MAC_MAGIC_PACKAGE_LENGTH>& magicPackage) noexcept {
+void WolApplication::generateMagicPackage(const std::array<char, kMacBytesLength> &mac,
+                                       std::array<char, kMacMagicPackageLength>& magicPackage) noexcept {
     // Set the first 6 bytes to 0xFF
-    std::fill_n(magicPackage.begin(), MAC_BYTES_LENGTH, 0xFF);
+    std::fill_n(magicPackage.begin(), kMacBytesLength, 0xFF);
 
     // Copy the MAC address 16 times
     for (int i = 1; i <= 16; ++i) {
-        std::copy(mac.begin(), mac.end(), magicPackage.begin() + i * MAC_BYTES_LENGTH);
+        std::copy(mac.begin(), mac.end(), magicPackage.begin() + i * kMacBytesLength);
     }
 }
 
-bool WolApplication::sendMagicPackage(const std::array<char, MAC_BYTES_LENGTH>& mac,
-                                   const std::array<char, MAC_MAGIC_PACKAGE_LENGTH>& magicPackage,
+bool WolApplication::sendMagicPackage(const std::array<char, kMacBytesLength>& mac,
+                                   const std::array<char, kMacMagicPackageLength>& magicPackage,
                                    const int port) noexcept {
     int s = socket(AF_INET, SOCK_DGRAM, 0);
     if (s < 0) {
@@ -126,7 +126,7 @@ void WolApplication::printHelpMessage() const noexcept {
               << std::endl;
 }
 
-bool WolApplication::isDelimiter(const char c) const noexcept {
+bool WolApplication::isDelimiter(char c) const noexcept {
     const std::array<char, 2> kDelimiters{':', '-'};
     return std::any_of(kDelimiters.begin(), kDelimiters.end(), [c](char b) { return c == b; });
 }
