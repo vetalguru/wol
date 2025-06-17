@@ -26,7 +26,7 @@ class WolApplication
         static constexpr size_t kMacMagicPackageLength = 102;
         static constexpr uint16_t kDefaultWolPort = 9;
 
-        using mac_t = std::array<char, kMacBytesLength>;
+        using mac_t = std::array<uint8_t, kMacBytesLength>;
         using magic_t = std::array<uint8_t, kMacMagicPackageLength>;
 
         bool parseParams(int argc, const char* const argv[]) noexcept;
