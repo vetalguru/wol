@@ -15,7 +15,7 @@ WolApplication::WolApplication(int argc, const char * const argv[]) {
 
 int WolApplication::run() noexcept {
     std::array<char, kMacBytesLength> mac{};
-    if (!m_isParamsValid || !convertMacStrToBytes(m_params[1], mac)) {
+    if (!m_isParamsValid || !strToMac(m_params[1], mac)) {
         std::cerr << "Error: Wrong parameters\n" << std::endl;
         printHelpMessage();
         return EXIT_FAILURE;
@@ -48,16 +48,16 @@ bool WolApplication::isMacStrValid(const std::string& macStr) noexcept {
     return isValid;
 }
 
-bool WolApplication::convertMacStrToBytes(const std::string& macStr, std::array<char, kMacBytesLength>& mac) noexcept {
+bool WolApplication::strToMac(const std::string& macStr, mac_t& mac) noexcept {
     std::fill(mac.begin(), mac.end(), 0);
     bool result{true};
 
     if (isMacStrValid(macStr)) {
-        constexpr int HEX{16}; // basis
+        constexpr int aHex{16}; // basis
         const char* ptr = macStr.c_str();
         char* endPtr = nullptr;
         for (char i = 0; i < kMacBytesLength; ++i) {
-            mac[i] = static_cast<char>(std::strtol(ptr, &endPtr, HEX));
+            mac[i] = static_cast<char>(std::strtol(ptr, &endPtr, aHex));
 
             // Check end of line
             if (*endPtr == '\0') {
