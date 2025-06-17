@@ -26,12 +26,13 @@ class WolApplication
         static constexpr int    kDefaultWolPort = 9;
 
         using mac_t = std::array<char, kMacBytesLength>;
+        using magic_t = std::array<char, kMacMagicPackageLength>;
 
         bool parseParams(int argc, const char* const argv[]) noexcept;
         bool isMacStrValid(const std::string& macStr) noexcept;
         bool strToMac(const std::string& macStr, mac_t& mac) noexcept;
-        void generateMagicPackage(const std::array<char, kMacBytesLength>& mac,
-                                  std::array<char, kMacMagicPackageLength>& magicPackage) noexcept;
+        void generateMagicPackage(const mac_t& mac,
+                                  magic_t& magicPackage) noexcept;
         bool sendMagicPackage(const std::array<char, kMacBytesLength>& mac,
                               const std::array<char, kMacMagicPackageLength>& magicPackage,
                               const int port = kDefaultWolPort) noexcept;

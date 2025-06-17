@@ -73,8 +73,7 @@ bool WolApplication::strToMac(const std::string& macStr, mac_t& mac) noexcept {
     return result;
 }
 
-void WolApplication::generateMagicPackage(const std::array<char, kMacBytesLength> &mac,
-                                       std::array<char, kMacMagicPackageLength>& magicPackage) noexcept {
+void WolApplication::generateMagicPackage(const mac_t& mac, magic_t& magicPackage) noexcept {
     // Set the first 6 bytes to 0xFF
     std::fill_n(magicPackage.begin(), kMacBytesLength, 0xFF);
 
