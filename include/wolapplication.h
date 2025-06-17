@@ -11,7 +11,7 @@ class WolApplication
         WolApplication(const int argc, const char* const argv[]);
         WolApplication(const WolApplication&) = delete;
         WolApplication(WolApplication&&) = delete;
-        ~WolApplication();
+        ~WolApplication() = delete;
 
         int run() noexcept;
 

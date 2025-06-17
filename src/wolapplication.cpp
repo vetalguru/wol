@@ -13,9 +13,6 @@ WolApplication::WolApplication(const int argc, const char * const argv[]) {
     m_isParamsValid = parseParams(argc, argv);
 }
 
-WolApplication::~WolApplication() {
-}
-
 int WolApplication::run() noexcept {
     std::array<char, MAC_BYTES_LENGTH> mac{};
     if (!m_isParamsValid || !convertMacStrToBytes(m_params[1], mac)) {
