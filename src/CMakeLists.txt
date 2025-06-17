@@ -2,7 +2,8 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 include_directories(${PROJECT_SOURCE_DIR}/include)
-set(INCLUDES_LIST ${PROJECT_SOURCE_DIR}/include/wolapplication.h)
+set(INCLUDES_LIST ${PROJECT_SOURCE_DIR}/include/wolapplication.h
+                  ${PROJECT_SOURCE_DIR}/include/wolsocket.h)
 
 set(SOURCES_LIST  ${PROJECT_SOURCE_DIR}/src/main.cpp
                   ${PROJECT_SOURCE_DIR}/src/wolapplication.cpp)

@@ -30,16 +30,16 @@ class WolApplication
         using magic_t = std::array<char, kMacMagicPackageLength>;
 
         bool parseParams(int argc, const char* const argv[]) noexcept;
-        bool isMacStrValid(const std::string& macStr) noexcept;
         bool strToMac(const std::string& macStr, mac_t& mac) noexcept;
         magic_t genMagicPackage(const mac_t& mac) noexcept;
         bool sendMagicPackage(const mac_t& mac,
                               const magic_t& magicPackage,
                               const uint16_t port = kDefaultWolPort) noexcept;
 
-        void printHelpMessage() const noexcept;
-
+        bool isMacStrValid(const std::string& macStr) noexcept;
         bool isDelimiter(char c) const noexcept;
+
+        void printHelpMessage() const noexcept;
 
     private:
         std::vector<std::string> m_params;

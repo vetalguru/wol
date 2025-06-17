@@ -9,6 +9,8 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#include "wolsocket.h"
+
 WolApplication::WolApplication(int argc, const char * const argv[]) {
     m_isParamsValid = parseParams(argc, argv);
 }
@@ -87,15 +89,15 @@ WolApplication::magic_t WolApplication::genMagicPackage(const mac_t& mac) noexce
 bool WolApplication::sendMagicPackage(const mac_t& mac,
                                       const magic_t& magicPackage,
                                       const uint16_t port) noexcept {
-    int s = socket(AF_INET, SOCK_DGRAM, 0);
-    if (s < 0) {
+
+    Socket s(AF_INET, SOCK_DGRAM, 0);
+    if (s.get() == Socket::SOCKET_ERROR) {
         return false;
     }
 
     // Set the socket option for broadcast
     int broadcast{1};
-    if (setsockopt(s, SOL_SOCKET, SO_BROADCAST, &broadcast, sizeof(broadcast)) < 0) {
-        close(s);
+    if (::setsockopt(s.get(), SOL_SOCKET, SO_BROADCAST, &broadcast, sizeof(broadcast)) < 0) {
         return false;
     }
 
@@ -106,11 +108,8 @@ bool WolApplication::sendMagicPackage(const mac_t& mac,
     hostAddr.sin_addr.s_addr = INADDR_BROADCAST;
 
     // Send the magic package
-    ssize_t sentBytes = sendto(s, &magicPackage[0], magicPackage.size(), 0,
+    ssize_t sentBytes = ::sendto(s.get(), &magicPackage[0], magicPackage.size(), 0,
                                reinterpret_cast<struct sockaddr*>(&hostAddr), sizeof(hostAddr));
-
-    // Close the socket
-    close(s);
 
     // Check if the package was sent successfully
     return (sentBytes == static_cast<ssize_t>(magicPackage.size()));
