@@ -2,6 +2,7 @@
 #define WOLAPPLICATION_H
 
 #include <array>
+#include <cstdint>
 #include <string>
 #include <vector>
 
@@ -23,7 +24,7 @@ class WolApplication
         static constexpr size_t kMacStrLength = 17;
         static constexpr size_t kMacBytesLength = 6;
         static constexpr size_t kMacMagicPackageLength = 102;
-        static constexpr int    kDefaultWolPort = 9;
+        static constexpr uint16_t kDefaultWolPort = 9;
 
         using mac_t = std::array<char, kMacBytesLength>;
         using magic_t = std::array<char, kMacMagicPackageLength>;
@@ -33,9 +34,9 @@ class WolApplication
         bool strToMac(const std::string& macStr, mac_t& mac) noexcept;
         void generateMagicPackage(const mac_t& mac,
                                   magic_t& magicPackage) noexcept;
-        bool sendMagicPackage(const std::array<char, kMacBytesLength>& mac,
-                              const std::array<char, kMacMagicPackageLength>& magicPackage,
-                              const int port = kDefaultWolPort) noexcept;
+        bool sendMagicPackage(const mac_t& mac,
+                              const magic_t& magicPackage,
+                              const uint16_t port = kDefaultWolPort) noexcept;
 
         void printHelpMessage() const noexcept;
 

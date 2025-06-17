@@ -83,9 +83,9 @@ void WolApplication::generateMagicPackage(const mac_t& mac, magic_t& magicPackag
     }
 }
 
-bool WolApplication::sendMagicPackage(const std::array<char, kMacBytesLength>& mac,
-                                   const std::array<char, kMacMagicPackageLength>& magicPackage,
-                                   const int port) noexcept {
+bool WolApplication::sendMagicPackage(const mac_t& mac,
+                                      const magic_t& magicPackage,
+                                      const uint16_t port) noexcept {
     int s = socket(AF_INET, SOCK_DGRAM, 0);
     if (s < 0) {
         return false;
