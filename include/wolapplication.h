@@ -4,7 +4,6 @@
 #include <array>
 #include <cstdint>
 #include <string>
-#include <vector>
 
 class WolApplication
 {
@@ -42,7 +41,7 @@ class WolApplication
         void printHelpMessage() const noexcept;
 
     private:
-        std::vector<std::string> m_params;
+        std::string m_macStr;
 
         bool m_isParamsValid{false};
 };

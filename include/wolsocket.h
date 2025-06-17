@@ -27,10 +27,10 @@ public:
 
     int get() const { return m_fd; }
 
-    Socket& operator = (Socket&& aOther) {
+    Socket& operator = (Socket&& aOther) noexcept {
         if (this != &aOther) {
             closeSocket(m_fd);
-            m_fd = aOther.m_fd;
+            m_fd = std::move(aOther.m_fd);
             aOther.m_fd = SOCKET_ERROR;
         }
         return *this;

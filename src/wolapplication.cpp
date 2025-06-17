@@ -5,6 +5,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <iostream>
+#include <sstream>
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <unistd.h>
@@ -17,59 +18,66 @@ WolApplication::WolApplication(int argc, const char * const argv[]) {
 
 int WolApplication::run() noexcept {
     mac_t mac{};
-    if (!m_isParamsValid || !strToMac(m_params[1], mac)) {
+    if (!m_isParamsValid || !strToMac(m_macStr, mac)) {
         std::cerr << "Error: Wrong parameters\n" << std::endl;
         printHelpMessage();
         return EXIT_FAILURE;
     }
 
-    std::cout << "Sending a magic package to the address : " << m_params[1] << std::endl;
+    std::cout << "Sending a magic package to the address : " << m_macStr << std::endl;
 
     return (!sendMagicPackage(mac, genMagicPackage(mac)));
 }
 
 bool WolApplication::parseParams(int argc, const char* const argv[]) noexcept {
-    m_params.clear();
-
-    for (int i = 0; i < argc; ++i) {
-        m_params.emplace_back(argv[i]);
+    if (argc != 2) {
+        return false;
     }
-
-    return (m_params.size() == 2);
+    m_macStr = argv[1];
+    return true;
 }
 
 bool WolApplication::isMacStrValid(const std::string& macStr) noexcept {
-    bool isValid = (macStr.length() == kMacStrLength);
-    for (int i = 0; isValid && i < kMacStrLength; ++i) {
-        isValid = (i % 3 != 2) ? std::isxdigit(macStr[i]) : isDelimiter(macStr[i]);
+    if (macStr.length() != kMacStrLength) {
+        return false;
     }
 
-    return isValid;
+    for (size_t i = 0; i < kMacStrLength; ++i) {
+        if (i % 3 == 2) {
+            if (!isDelimiter(macStr[i])) {
+                return false;
+            }
+        } else {
+            if (!std::isxdigit(macStr[i])) {
+                return false;
+            }
+        }
+    }
+
+    return true;
 }
 
 bool WolApplication::strToMac(const std::string& macStr, mac_t& mac) noexcept {
     std::fill(mac.begin(), mac.end(), 0);
-    bool result{true};
 
-    if (isMacStrValid(macStr)) {
-        constexpr int aHex{16}; // basis
-        const char* ptr = macStr.c_str();
-        char* endPtr = nullptr;
-        for (char i = 0; i < kMacBytesLength; ++i) {
-            mac[i] = static_cast<char>(std::strtol(ptr, &endPtr, aHex));
-
-            // Check end of line
-            if (*endPtr == '\0') {
-                break;
-            }
-
-            ptr = ++endPtr;
-        }
-    } else {
-        result = false;
+    if (!isMacStrValid(macStr)) {
+        return false;
     }
 
-    return result;
+    std::stringstream ss(macStr);
+    std::string byte;
+    size_t index = 0;
+
+    while (std::getline(ss, byte, isDelimiter(macStr[2]) ? macStr[2] : ':')) {
+        if (byte.length() != 2 || !std::isxdigit(byte[0]) || !std::isxdigit(byte[1])) {
+            return false;
+        }
+
+        mac[index++] = static_cast<uint8_t>(std::stoi(byte, nullptr, 16));
+        if (index >= kMacBytesLength) break;
+    }
+
+    return (index == kMacBytesLength);
 }
 
 WolApplication::magic_t WolApplication::genMagicPackage(const mac_t& mac) noexcept {
@@ -112,7 +120,7 @@ bool WolApplication::sendMagicPackage(const mac_t& mac,
                                reinterpret_cast<struct sockaddr*>(&hostAddr), sizeof(hostAddr));
 
     // Check if the package was sent successfully
-    return (sentBytes == static_cast<ssize_t>(magicPackage.size()));
+    return sentBytes == static_cast<ssize_t>(magicPackage.size());
 }
 
 void WolApplication::printHelpMessage() const noexcept {
@@ -125,6 +133,6 @@ void WolApplication::printHelpMessage() const noexcept {
 }
 
 bool WolApplication::isDelimiter(char c) const noexcept {
-    const std::array<char, 2> kDelimiters{':', '-'};
+    constexpr std::array<char, 2> kDelimiters{':', '-'};
     return std::any_of(kDelimiters.begin(), kDelimiters.end(), [c](char b) { return c == b; });
 }
