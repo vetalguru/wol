@@ -17,7 +17,7 @@ WolApplication::~WolApplication() {
 
 int WolApplication::run() noexcept {
     std::array<char, MAC_BYTES_LENGTH> mac{};
-    if (!m_isParamsValid || !converMacStrToBytes(m_params[1], mac)) {
+    if (!m_isParamsValid || !convertMacStrToBytes(m_params[1], mac)) {
         std::cerr << "Error: Wrong parameters\n" << std::endl;
         printHelpMessage();
         return EXIT_FAILURE;
@@ -51,7 +51,7 @@ bool WolApplication::isMACAddressString(const std::string& macStr) noexcept {
     return isValid;
 }
 
-bool WolApplication::converMacStrToBytes(const std::string& macStr, std::array<char, MAC_BYTES_LENGTH>& mac) noexcept {
+bool WolApplication::convertMacStrToBytes(const std::string& macStr, std::array<char, MAC_BYTES_LENGTH>& mac) noexcept {
     std::fill(mac.begin(), mac.end(), 0);
 
     bool result{true};
