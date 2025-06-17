@@ -26,7 +26,7 @@ class WolApplication
         static constexpr int    kDefaultWolPort = 9;
 
         bool parseParams(int argc, const char* const argv[]) noexcept;
-        bool isMACAddressString(const std::string& macStr) noexcept;
+        bool isMacStrValid(const std::string& macStr) noexcept;
         bool convertMacStrToBytes(const std::string& macStr, std::array<char, kMacBytesLength>& mac) noexcept;
         void generateMagicPackage(const std::array<char, kMacBytesLength>& mac,
                                   std::array<char, kMacMagicPackageLength>& magicPackage) noexcept;

@@ -39,9 +39,8 @@ bool WolApplication::parseParams(int argc, const char* const argv[]) noexcept {
     return (m_params.size() == 2);
 }
 
-bool WolApplication::isMACAddressString(const std::string& macStr) noexcept {
+bool WolApplication::isMacStrValid(const std::string& macStr) noexcept {
     bool isValid = (macStr.length() == kMacStrLength);
-
     for (int i = 0; isValid && i < kMacStrLength; ++i) {
         isValid = (i % 3 != 2) ? std::isxdigit(macStr[i]) : isDelimiter(macStr[i]);
     }
@@ -51,9 +50,9 @@ bool WolApplication::isMACAddressString(const std::string& macStr) noexcept {
 
 bool WolApplication::convertMacStrToBytes(const std::string& macStr, std::array<char, kMacBytesLength>& mac) noexcept {
     std::fill(mac.begin(), mac.end(), 0);
-
     bool result{true};
-    if (isMACAddressString(macStr)) {
+
+    if (isMacStrValid(macStr)) {
         constexpr int HEX{16}; // basis
         const char* ptr = macStr.c_str();
         char* endPtr = nullptr;
