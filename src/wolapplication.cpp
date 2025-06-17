@@ -114,7 +114,7 @@ bool WolApplication::sendMagicPackage(const std::array<char, MAC_BYTES_LENGTH>& 
     close(s);
 
     // Check if the package was sent successfully
-    return (sentBytes == static_cast<ssize_t>(magicPackage.size()));;
+    return (sentBytes == static_cast<ssize_t>(magicPackage.size()));
 }
 
 void WolApplication::printHelpMessage() const noexcept {
