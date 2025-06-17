@@ -1,5 +1,6 @@
 #include "wolapplication.h"
 
+#include <algorithm>
 #include <arpa/inet.h>
 #include <cstdlib>
 #include <cstring>
@@ -129,15 +130,6 @@ void WolApplication::printHelpMessage() const noexcept {
 }
 
 bool WolApplication::isDelimiter(const char c) const noexcept {
-    const std::array<char, 2> DELIMITERS{':', '-'};
-    bool result{false};
-
-    for (const auto &ch : DELIMITERS) {
-        if (c == ch) {
-            result = true;
-            break;
-        }
-    }
-
-    return result;
+    const std::array<char, 2> kDelimiters{':', '-'};
+    return std::any_of(kDelimiters.begin(), kDelimiters.end(), [c](char b) { return c == b; });
 }
